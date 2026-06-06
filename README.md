@@ -19,14 +19,13 @@ By engineering a robust Data Model and utilizing advanced DAX, this dashboard ac
 
 ## 🧠 Data Modeling Architecture
 
-*(Insert your Data Model Image here by removing the comment tags below and uploading the image to the Images folder)*
+*(Insert your Data Model Image here)*
 **Key Modeling Highlights:**
 * **Dimensions:** `Items_D` (Finished Goods) and `Materials_D` (Raw Materials).
 * **Facts:** Separated Execution (`Actual FG`), Planning (`Plan_F`), and Inventory (`Material_Inv_F`).
 * **The Bridge:** `BOM_F` acts as the critical bridge resolving the granularity mismatch between FG produced and RM consumed.
 
-<details>
-<summary><b>🔍 Click here to view the Detailed Table Relationships (14 Active Links)</b></summary>
+**Table Relationships (Active Links):**
 
 | Child Table (Fact / Bridge) | Foreign Key | Direction | Parent Table (Dimension) | Primary Key |
 | :--- | :--- | :---: | :--- | :--- |
@@ -45,16 +44,22 @@ By engineering a robust Data Model and utilizing advanced DAX, this dashboard ac
 | `Demand_Material` | `Material Code` | ↔️ | `Materials_D` | `Material Code` |
 | `Material_Inv_F` | `Code` | ↔️ | `Materials_D` | `Material Code` |
 
-> *Note: ⬅️ indicates a Many-to-One relationship, while ↔️ indicates a One-to-One or Bi-directional filtering setup optimized for specific DAX measures.*
-</details>
+> *Note: ⬅️ indicates a Many-to-One relationship, while ↔️ indicates a One-to-One or Bi-directional filtering setup.*
 
 ---
 
-## 💻 Advanced DAX Highlights
+## 💻 Advanced DAX Capabilities Overview
 
-### 1. Dynamic BOM Explosion (Preventing Multiplication Explosion)
-To calculate the exact Raw Material equivalent of the produced Finished Goods without duplicating numbers, we iterate over the BOM table directly:
+To make this dashboard operate like an MRP system, advanced DAX methodologies were implemented across the project. 
+*(You can find the full code files in the `DAX_Measures` folder in this repository).*
 
+**Core DAX Techniques Utilized:**
+1. **Dynamic BOM Iteration (Context Transition):** Overcoming multiplication explosion by iterating directly over the BOM bridge table using `SUMX` and modifying row contexts with `CALCULATE`.
+2. **Custom SVG Generation for UI/UX:** Writing dynamic SVG markup inside DAX variables to generate interactive, ERP-style status badges and info cards directly within the matrix and card visuals based on user selections.
+3. **Variance & Shortage Logic:** Calculating running totals, safety stock margins, and plan-vs-actual variances conditionally based on the selected material category.
+
+**Snippet: The BOM Explosion Measure**
+*(This single measure dynamically resolves the FG-to-Raw-Material conversion without duplication)*
 ```dax
 Actual Material Production = 
 SUMX(
