@@ -18,13 +18,35 @@ By engineering a robust Data Model and utilizing advanced DAX, this dashboard ac
 ---
 
 ## 🧠 Data Modeling Architecture
-*(Add your Data Model screenshot here later)*
-<!-- ![Data Model](Images/data_model_screenshot.png) -->
 
+*(Insert your Data Model Image here by removing the comment tags below and uploading the image to the Images folder)*
 **Key Modeling Highlights:**
 * **Dimensions:** `Items_D` (Finished Goods) and `Materials_D` (Raw Materials).
 * **Facts:** Separated Execution (`Actual FG`), Planning (`Plan_F`), and Inventory (`Material_Inv_F`).
 * **The Bridge:** `BOM_F` acts as the critical bridge resolving the granularity mismatch between FG produced and RM consumed.
+
+<details>
+<summary><b>🔍 Click here to view the Detailed Table Relationships (14 Active Links)</b></summary>
+
+| Child Table (Fact / Bridge) | Foreign Key | Direction | Parent Table (Dimension) | Primary Key |
+| :--- | :--- | :---: | :--- | :--- |
+| `Actual FG` | `Code` | ⬅️ | `Items_D` | `Item` |
+| `Actual FG` | `Date` | ⬅️ | `Calendar` | `Date` |
+| `BOM_F` | `Item` | ⬅️ | `Items_D` | `Item` |
+| `BOM_F` | `Material Code` | ⬅️ | `Materials_D` | `Material Code` |
+| `Plan_F` | `Code` | ⬅️ | `Items_D` | `Item` |
+| `Plan_F` | `Date` | ⬅️ | `Calendar` | `Date` |
+| `Plan_Material` | `Code` | ⬅️ | `Items_D` | `Item` |
+| `Plan_Material` | `Material Code` | ⬅️ | `Materials_D` | `Material Code` |
+| `Safety_Stock` | `Material Code` | ⬅️ | `Demand_Material` | `Material Code` |
+| `schedule_plan_material` | `Material Code` | ⬅️ | `Demand_Material` | `Material Code` |
+| `Demand_FG` | `Code` | ↔️ | `Items_D` | `Item` |
+| `FG_Inv_F` | `Row Labels` | ↔️ | `Items_D` | `Item` |
+| `Demand_Material` | `Material Code` | ↔️ | `Materials_D` | `Material Code` |
+| `Material_Inv_F` | `Code` | ↔️ | `Materials_D` | `Material Code` |
+
+> *Note: ⬅️ indicates a Many-to-One relationship, while ↔️ indicates a One-to-One or Bi-directional filtering setup optimized for specific DAX measures.*
+</details>
 
 ---
 
